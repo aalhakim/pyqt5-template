@@ -1,0 +1,41 @@
+    QMainWindow {
+        /*background-color: #ffffff;*/
+    }
+
+
+    QWidget {
+        /*font-family: roboto;*/
+        /*font-size: 18px;*/
+        /*font-weight: normal;*/
+    }
+
+
+    QLabel {
+        font-family: roboto;
+        font-size: 30px;
+        font-weight: normal;
+        color: #000000;
+        background-color: #FAD26E;
+    }
+
+
+    QMenuBar {
+        /*font-family: roboto;*/
+        /*font-size: 20px;*/
+        /*font-weight: 500;*/
+        /*background-color: #ffffff;*/
+        /*color: #000000;*/
+        /*background-color: #2196f3;*/
+        /*color: #ffffff;*/
+    }
+
+
+    QStatusBar {
+        /*font-family: roboto;*/
+        /*font-size: 18px;*/
+        /*font-weight: 500;*/
+        /*background-color: #ffffff;*/
+        /*color: #000000;*/
+        /*background-color: #2196f3;*/
+        /*color: #ffffff;*/
+    }
