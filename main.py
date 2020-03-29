@@ -78,6 +78,7 @@ def run_app():
 
         # Run the application
         Workers.sigStartController.emit()
+        Workers.sigStartWebClient.emit()
         Window.show()
         App.exec_(App.exec_())
 

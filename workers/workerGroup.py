@@ -8,6 +8,7 @@ Last Updated: 18 December 2019 (Ali Al-Hakim)
 """
 
 # Standard Library Imports
+import os
 import time
 import logging
 debugLogger = logging.getLogger(__name__)
@@ -17,12 +18,23 @@ from PyQt5 import QtCore
 
 # Local Library imports
 from workers.controller import Controller
+# from spinner import Spinner
+from workers.webClient import WebClient
 
 
 ########################################################################
 # Define a period of time to wait before force-killing all threads.
 SHUTDOWN_DELAY = 0.1    # seconds
 
+# Obtain S3 login credentials
+import dotenv
+dotenv.load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+S3_ACCESS_KEY = os.environ["S3_ACCESS_KEY"]
+S3_SECRET_KEY = os.environ["S3_SECRET_KEY"]
+S3_BUCKET = os.environ["S3_BUCKET"]
+
+# Obtain Github access credentials
+REPO_ACCESS_TOKEN = os.environ["REPO_ACCESS_TOKEN"]
 
 ########################################################################
 class WorkerGroup(QtCore.QObject):
@@ -30,23 +42,33 @@ class WorkerGroup(QtCore.QObject):
     # Define Signals
     sigStartController = QtCore.pyqtSignal()
     sigStartSpinner = QtCore.pyqtSignal()
+    sigStartWebClient = QtCore.pyqtSignal()
     sigShutdown = QtCore.pyqtSignal()
 
     def __init__(self):
         super(WorkerGroup, self).__init__()
         self.threads = {}
-        self.threads[self._create_controller()] = "controller"
+        self.threads[self._create_controller()] = "Controller"
+        self.threads[self._create_webClient()] = "WebClient"
         # self.threads[self._create_downloader()] = "downloader"
         # self.threads[self._create_uploader()] = "uploader"
         # self.threads[self._create_spinner()] = "spinner"
 
     def _create_controller(self):
-        debugLogger.debug("Creating thread: controller.")
+        debugLogger.debug("Creating thread: Controller.")
         self.controller = Controller()
         self.controller_thread = QtCore.QThread()
         self.controller.moveToThread(self.controller_thread)
         self.controller_thread.start()
         return self.controller_thread
+
+    def _create_webClient(self):
+        debugLogger.debug("Creating thread: WebClient.")
+        self.webClient = WebClient(S3_BUCKET, S3_ACCESS_KEY, S3_SECRET_KEY, REPO_ACCESS_TOKEN)
+        self.webClient_thread = QtCore.QThread()
+        self.webClient.moveToThread(self.webClient_thread)
+        self.webClient_thread.start()
+        return self.webClient_thread
 
     # def _create_spinner(self):
     #     debugLogger.debug("Creating thread: spinner.")
