@@ -23,7 +23,7 @@ WINDOW_HEIGHT = 720 # in pixels
 
 ICON_FILE = "graphics/icon.png"
 
-VERSION = 1
+VERSION = "1.0.0"
 
 
 ########################################################################
