@@ -28,7 +28,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 # Local Library Imports
 from views.mainWindow import MainWindow
 from views.centralWidget import CentralWidget
-from workers.workers import WorkerGroup
+from workers.workerGroup import WorkerGroup
 
 
 ########################################################################
@@ -69,22 +69,22 @@ def run_app():
         Window.setCentralWidget(CentralWidget(Window))
 
         # Define signal-slot shutdown sequence
-        Window.sigShutdown.connect(Workers.controller.shutdown)            # 1. End all control operations
-        Workers.sigController._shutdown.connect(Workers.kill_all_threads)  # 2. Kill all threads
-        Workers.sigShutdown.connect(Window.shutdown)                       # 3. Close window
+        Window.sigShutdown.connect(Workers.controller.shutdown)           # 1. End all control operations
+        Workers.controller.sigShutdown.connect(Workers.kill_all_threads)  # 2. Kill all threads
+        Workers.sigShutdown.connect(Window.shutdown)                      # 3. Close window
 
         # Connect other worker signals and slots together
-        connect_signals_and_slots(Window, WorkerGroup)
+        connect_signals_and_slots(Window, Workers)
 
         # Run the application
-        Workers.startController.emit()
+        Workers.sigStartController.emit()
         Window.show()
         App.exec_(App.exec_())
 
     except Exception:
         # Capture all application errors to ensure the worker threads
         # can then be killed in a controlled manner.
-        debugLogger.error("There was a fatal error which caused the applicationto close.")
+        debugLogger.error("There was a fatal error which caused the application to close.")
         traceback.print_exc()
         Workers.controller.closeEvent()
         Workers.kill_all_threads()

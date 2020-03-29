@@ -16,8 +16,7 @@ debugLogger = logging.getLogger(__name__)
 from PyQt5 import QtCore
 
 # Local Library imports
-from controller import Controller
-from spinner import Spinner
+from workers.controller import Controller
 
 
 ########################################################################
@@ -37,9 +36,9 @@ class WorkerGroup(QtCore.QObject):
         super(WorkerGroup, self).__init__()
         self.threads = {}
         self.threads[self._create_controller()] = "controller"
-        self.threads[self._create_downloader()] = "downloader"
-        self.threads[self._create_uploader()] = "uploader"
-        self.threads[self._create_spinner()] = "spinner"
+        # self.threads[self._create_downloader()] = "downloader"
+        # self.threads[self._create_uploader()] = "uploader"
+        # self.threads[self._create_spinner()] = "spinner"
 
     def _create_controller(self):
         debugLogger.debug("Creating thread: controller.")
@@ -49,13 +48,13 @@ class WorkerGroup(QtCore.QObject):
         self.controller_thread.start()
         return self.controller_thread
 
-    def _create_spinner(self):
-        debugLogger.debug("Creating thread: spinner.")
-        self.spinner = Spinner()
-        self.spinner_thread = QtCore.QThread()
-        self.spinner.moveToThread(self.spinner_thread)
-        self.spinner_thread.start()
-        return self.spinner_thread
+    # def _create_spinner(self):
+    #     debugLogger.debug("Creating thread: spinner.")
+    #     self.spinner = Spinner()
+    #     self.spinner_thread = QtCore.QThread()
+    #     self.spinner.moveToThread(self.spinner_thread)
+    #     self.spinner_thread.start()
+    #     return self.spinner_thread
 
     @QtCore.pyqtSlot(str, str)
     def logger(self, priority, message):
