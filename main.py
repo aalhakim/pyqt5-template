@@ -42,6 +42,10 @@ def connect_signals_and_slots(Window, Workers):
     # Connect WorkerGroup signals to application slots
     Workers.sigStartController.connect(Workers.controller.start)
 
+    Workers.controller.sigReleaseQuery.connect(Workers.webClient.handle_release_query)
+    Workers.webClient.sigReleaseLatest.connect(Workers.controller.handle_release_latest)
+    Workers.webClient.sigReleaseList.connect(Workers.controller.handle_release_list)
+
 
 def close_app():
     """ Actions prior to the application being shutdown

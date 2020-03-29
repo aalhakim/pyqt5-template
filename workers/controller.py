@@ -20,6 +20,7 @@ from PyQt5 import QtCore
 class Controller(QtCore.QObject):
 
     sigShutdown = QtCore.pyqtSignal()
+    sigReleaseQuery = QtCore.pyqtSignal(str)
 
     def __init__(self):
         super(Controller, self).__init__()
@@ -81,3 +82,20 @@ class Controller(QtCore.QObject):
         # -------------------------- #
         self.sigShutdown.emit()
 
+    ####################################################################
+    # METHODS
+    ####################################################################
+    @QtCore.pyqtSlot(str)
+    def handle_release_latest(self, tag_name):
+        """
+        Handle receipt of latest release tag data.
+        """
+        self.latest_release = tag_name
+
+    @QtCore.pyqtSlot(list)
+    def handle_release_list(self, tag_names):
+        """
+        Handle receipt of release list data
+        """
+        self.software_list = tag_names
+        print(tag_names)
