@@ -13,13 +13,13 @@ import os
 if __name__ == "__main__":
     import logging.config
     logger_config = "logging_{}.conf".format(os.name)
-    logging.config.fileConfig(os.path.join(os.path.dirname(__file__), "conf", logger_config))
+    logging.config.fileConfig(os.path.join(os.path.dirname(__file__), "logger", logger_config))
 
 
 # Standard Library Imports
 import sys
-import logging
 import traceback
+import logging
 debugLogger = logging.getLogger(__name__)
 
 # Third-Party Library Imports
@@ -35,7 +35,7 @@ from workers.workers import WorkerGroup
 def connect_signals_and_slots(Window, Workers):
     """ Connect application signals and slots together.
 
-    [ARGS]
+    [Args]
     window: PyQt5.QtWidgets.QMainWindow object
     workers: workers.workerGroup.WorkerGroup object
     """
