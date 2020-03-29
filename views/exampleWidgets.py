@@ -12,11 +12,18 @@ Last Updated: 18 December 2019 (Ali Al-Hakim)
 """
 
 # Standard Library Imports
+import os
 import logging
 debugLogger = logging.getLogger(__name__)
 
 # Third-Party Library Imports
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+########################################################################
+# Import Stylesheet configuration
+with open(os.path.join(os.path.dirname(__file__), "styles.css"), "r") as rf:
+    STYLESHEET = rf.read()
 
 
 ########################################################################
@@ -28,6 +35,9 @@ class exampleWidgets(QtWidgets.QWidget):
     def __init__(self, parent):
         super(exampleWidgets, self).__init__(parent=parent)
         self.parent = parent
+
+        # Apply style sheet settings to change visual design
+        self.setStyleSheet(STYLESHEET)
 
         #---------------------------------------------------------------
         # Example of a QLabel
