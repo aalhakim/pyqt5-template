@@ -22,14 +22,17 @@ debugLogger = logging.getLogger(__name__)
 # Third-Party Library imports
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+# Local library imports
+from modules import appdata
+from views.dialogHelpAbout import DialogHelpAbout
+from views.dialogHelpGuide import DialogHelpGuide
+
 
 ########################################################################
 WINDOW_WIDTH = 1280 # in pixels
 WINDOW_HEIGHT = 720 # in pixels
 
 ICON_FILE = "graphics/icon.png"
-
-VERSION = "1.0.0"
 
 
 ########################################################################
@@ -44,7 +47,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.debugMode = False
 
         # Configure basic MainWindow properties
-        self.setWindowTitle("PyQt5 Example Application :: V{}".format(VERSION))
+        self.setWindowTitle("{}  –  {}  –  v{}".format(appdata.ORGANISATION_NAME,
+                                                       appdata.APPLICATION_NAME,
+                                                       appdata.VERSION))
         print(os.path.join(os.path.dirname(__file__), os.path.normpath(ICON_FILE)))
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__), ICON_FILE)))
         self.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
@@ -150,7 +155,7 @@ if __name__ == "__main__":
 
     # Create 'main' worker thread
     Window = MainWindow()
-    Window.debugMode = True
+    Window.debugMode = True                                             # TODO (AHA): What is debug mode used for?
 
     # Run the application
     Window.show()
