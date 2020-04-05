@@ -41,10 +41,16 @@ class MainWindow(QtWidgets.QMainWindow):
     """
 
     sigShutdown = QtCore.pyqtSignal()
+    sigUpdateConfiguration = QtCore.pyqtSignal()
 
     def __init__(self):
         super(MainWindow, self).__init__()
         self.debugMode = False
+
+        # Define class object handlers.
+        self.dialogs = {}  # Dialog window object manager
+        self.software_list = []
+        self.printer_list = []
 
         # Configure basic MainWindow properties
         self.setWindowTitle("{}  –  {}  –  v{}".format(appdata.ORGANISATION_NAME,
@@ -56,6 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.centre()
 
         # Add a menubar, toolbars and status bar
+        self.initMenubar()
         self.initStatusbar()
 
         # Add a central widget
@@ -64,7 +71,62 @@ class MainWindow(QtWidgets.QMainWindow):
     #-------------------------------------------------------------------
     # METHODS
     #-------------------------------------------------------------------
+    def initMenubar(self):
+        """
+        Draw a menubar along the top of the window
+        """
+        self.menubar = self.menuBar()
+
+        # --- File Menu
+        self.menubar_fileMenu = self.menubar.addMenu("&File")
+        action_fileExit = QtWidgets.QAction("&Exit", self)
+        action_fileExit.triggered.connect(self.closeEvent)
+        action_fileExit.setStatusTip('Exit application')
+        self.menubar_fileMenu.addAction(action_fileExit)
+
+        # Application Configuration Menu
+        self.menubar_configMenu = self.menubar.addMenu("&Configuration")
+        action_updateConfiguration = QtWidgets.QAction("&Update Configuration", self)
+        action_updateConfiguration.triggered.connect(self.sigUpdateConfiguration.emit)
+        config_SoftwareAutoUpdate = QtWidgets.QAction("Software Auto-Update", self)
+        config_SoftwareAutoUpdate.setEnabled(False)
+        config_softwareUpdateList = QtWidgets.QMenu("Software Update List", self)
+        config_validateCRC = QtWidgets.QAction("Validate CRC", self)
+        config_validateCRC.setEnabled(False)
+        config_validateRegistered = QtWidgets.QAction("Validate Registered", self)
+        config_validateRegistered.setEnabled(False)
+
+        self.menubar_configMenu.addAction(action_updateConfiguration)
+        self.menubar_configMenu.addSeparator()
+        self.menubar_configMenu.addAction(config_SoftwareAutoUpdate)
+        self.menubar_configMenu.addMenu(config_softwareUpdateList)
+        self.menubar_configMenu.addSeparator()
+        self.menubar_configMenu.addAction(config_validateCRC)
+        self.menubar_configMenu.addAction(config_validateRegistered)
+
+        # Services Settings Menu
+        self.menubar_servicesMenu = self.menubar.addMenu("&Services")
+        config_autoSelectPrinter = QtWidgets.QAction("Auto-Select Printer", self)
+        config_autoSelectPrinter.setEnabled(False)
+        config_printerList = QtWidgets.QMenu("Printer List", self)
+
+        self.menubar_servicesMenu.addAction(config_autoSelectPrinter)
+        self.menubar_servicesMenu.addMenu(config_printerList)
+
+        # Help Menu
+        self.menubar_helpMenu = self.menubar.addMenu("&Help")
+        action_helpGuide = QtWidgets.QAction("&Guide", self)
+        action_helpGuide.triggered.connect(self.show_dialog_helpGuide)
+        action_helpAbout = QtWidgets.QAction("&About", self)
+        action_helpAbout.triggered.connect(self.show_dialog_helpAbout)
+
+        self.menubar_helpMenu.addAction(action_helpGuide)
+        self.menubar_helpMenu.addAction(action_helpAbout)
+
     def initStatusbar(self):
+        """
+        Draw a statusbar along the bottom of the window
+        """
         self.status_bar = QtWidgets.QStatusBar()
         self.status_bar.setSizeGripEnabled(False)
         self.status_bar.setFixedWidth(self.width())
@@ -105,6 +167,43 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         debugLogger.info("Shutdown complete")
         sys.exit(0)  # [AHA] Is this too brute force?
+
+    #-------------------------------------------------------------------
+    # METHODS
+    #-------------------------------------------------------------------
+    def show_dialog_helpAbout(self):
+        """ Display a dialog window with information about the app.
+        """
+        if appdata.DIALOG_NAME_HELP_ABOUT in self.dialogs:
+            # Bring dialog forward and shift focus to it if it is open.
+            self.dialogs[appdata.DIALOG_NAME_HELP_ABOUT].show()
+            self.dialogs[appdata.DIALOG_NAME_HELP_ABOUT].activateWindow()
+        else:
+            # Create the dialog if it does not exist.
+            dialog = DialogHelpAbout(self)
+            dialog.show()
+            self.dialogs[appdata.DIALOG_NAME_HELP_ABOUT] = dialog
+
+    def show_dialog_helpGuide(self):
+        """ Display a dialog window with information on how to use the app.
+        """
+        if appdata.DIALOG_NAME_HELP_GUIDE in self.dialogs:
+            # Bring dialog forward and shift focus to it if it is open.
+            self.dialogs[appdata.DIALOG_NAME_HELP_GUIDE].show()
+            self.dialogs[appdata.DIALOG_NAME_HELP_GUIDE].activateWindow()
+        else:
+            # Create the dialog if it does not exist.
+            dialog = DialogHelpGuide(self)
+            dialog.show()
+            self.dialogs[appdata.DIALOG_NAME_HELP_GUIDE] = dialog
+
+    @QtCore.pyqtSlot(dict)
+    def handle_update_configuration(self, config):
+        """
+        Update the widgets to display the correct configuration settings.
+        """
+        pass
+
 
     #-------------------------------------------------------------------
     # EVENT HANDLERS
