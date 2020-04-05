@@ -15,32 +15,17 @@ debugLogger = logging.getLogger(__name__)
 # Third-Party Library Imports
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+# Local library imports
+from views.colours import rgb_to_hex
+from views.colours import RED_LIGHT, GREEN_LIGHT, YELLOW_LIGHT, ORANGE_LIGHT
 
 ########################################################################
 # Choose whether to display the Test Button or not
-VIEW_TEST_MODE = False
+VIEW_TEST_MODE = True
 
 # Import Stylesheet Contents
 with open(os.path.join(os.path.dirname(__file__), "styles.css"), "r") as rf:
     STYLESHEET = rf.read()
-
-########################################################################
-# Valid QtWidgets.QLabel stylesheet background colours
-# Tree widget RGB colour options
-BLACK  = (  0,   0,   0)
-RED    = (250,  40,  40)
-GREEN  = ( 60, 220,  60)
-AMBER  = (250, 250, 110)
-PURPLE = (220, 120, 220)
-BLUE   = ( 60, 170, 240)
-ORANGE = (240, 140,  60)
-YELLOW = (250, 210, 110)
-
-def rgb_to_hex(rgb):
-    hex_r = str(hex(rgb[0]).replace("0x", ""))
-    hex_g = str(hex(rgb[1]).replace("0x", ""))
-    hex_b = str(hex(rgb[2]).replace("0x", ""))
-    return "#" + hex_r + hex_g + hex_b
 
 
 ########################################################################
@@ -121,7 +106,7 @@ class CentralWidget(QtWidgets.QWidget):
         Args:
             slot_id: Integer representation of the test slot
             colour: This should be a program defined colour i.e.
-                    RED, YELLOW, GREEN.
+                    RED_LIGHT, YELLOW_LIGHT, GREEN_LIGHT.
 
         Returns:
             Nothing. This method will just change the background colour
@@ -148,25 +133,25 @@ class CentralWidget(QtWidgets.QWidget):
     QtCore.pyqtSlot(int, str)
     def failed(self, slot_id, text=""):
         self._validate_slot(slot_id)
-        self.change_colour(slot_id, rgb_to_hex(RED))
+        self.change_colour(slot_id, rgb_to_hex(RED_LIGHT))
         self.change_text(slot_id, "BON {}\n\nFAIL\n{}".format(slot_id+1, text))
 
     QtCore.pyqtSlot(int, str)
     def passed(self, slot_id, text=""):
         self._validate_slot(slot_id)
-        self.change_colour(slot_id, rgb_to_hex(GREEN))
+        self.change_colour(slot_id, rgb_to_hex(GREEN_LIGHT))
         self.change_text(slot_id, "BON {}\n\nPASS\n{}".format(slot_id+1, text))
 
     QtCore.pyqtSlot(int, str)
     def testing(self, slot_id, text=""):
         self._validate_slot(slot_id)
-        self.change_colour(slot_id, rgb_to_hex(ORANGE))
+        self.change_colour(slot_id, rgb_to_hex(ORANGE_LIGHT))
         self.change_text(slot_id, "BON {}\n\nTESTING\n{}".format(slot_id+1, text))
 
     QtCore.pyqtSlot(int)
     def waiting(self, slot_id):
         self._validate_slot(slot_id)
-        self.change_colour(slot_id, rgb_to_hex(YELLOW))
+        self.change_colour(slot_id, rgb_to_hex(YELLOW_LIGHT))
         self.change_text(slot_id, "BON {}\n\nInsert Device\n".format(slot_id+1))
 
     #------------------------------------------------------------------#
