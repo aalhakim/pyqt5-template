@@ -1,3 +1,4 @@
+#!python3
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
@@ -7,13 +8,18 @@ MainWindow PyQt5 object.
 Last Updated: 18 December 2019 (Ali Al-Hakim)
 """
 
-# Standard Library Imports
-import os
 import sys
+if __name__ == "__main__":
+    pkg_name = "pyqt5-template"
+    pkg_dir = __file__[0:__file__.find(pkg_name)+len(pkg_name)]
+    sys.path.append(pkg_dir)
+
+# Standard Library imports
+import os
 import logging
 debugLogger = logging.getLogger(__name__)
 
-# Third-Party Library Imports
+# Third-Party Library imports
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
