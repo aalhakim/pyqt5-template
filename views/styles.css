@@ -4,7 +4,7 @@
 
 
     QWidget {
-        /*font-family: roboto;*/
+        /*font-family: noto sans;*/
         /*font-size: 18px;*/
         /*font-weight: normal;*/
     }
@@ -20,8 +20,8 @@
 
 
     QMenuBar {
-        /*font-family: roboto;*/
-        /*font-size: 20px;*/
+        font-family: noto sans;
+        font-size: 14pt;
         /*font-weight: 500;*/
         /*background-color: #ffffff;*/
         /*color: #000000;*/
@@ -31,7 +31,7 @@
 
 
     QStatusBar {
-        /*font-family: roboto;*/
+        /*font-family: noto sans;*/
         /*font-size: 18px;*/
         /*font-weight: 500;*/
         /*background-color: #ffffff;*/
