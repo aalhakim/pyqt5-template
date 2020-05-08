@@ -69,7 +69,7 @@ def run_app():
 
         # Create the MainWindow object (which is also the UI worker thread)
         Window = MainWindow()
-        Window.setCentralWidget(CentralWidget(Window))
+        Window.setMainWidget(CentralWidget(Window))
 
         # Define signal-slot shutdown sequence
         Window.sigShutdown.connect(Workers.controller.shutdown)           # 1. End all control operations
