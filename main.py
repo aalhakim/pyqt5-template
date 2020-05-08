@@ -45,6 +45,14 @@ def connect_signals_and_slots(Window, Workers):
     Workers.webClient.sigReleaseLatest.connect(Workers.controller.handle_release_latest)
     Workers.webClient.sigReleaseList.connect(Workers.controller.handle_release_list)
 
+    Window.sigUpdateConfiguration.connect(Workers.controller.handle_update_configuration)
+    Workers.controller.sigEnableApplication.connect(Window.enable_application)
+
+    Window.sigSelectSoftware.connect(Workers.webClient.handle_update_application)
+    Workers.controller.sigUpdateApplication.connect(Workers.webClient.handle_update_application)
+
+    Workers.controller.sigUpdateSoftwareList.connect(Window.update_software_list)
+    Workers.controller.sigUpdateConfigStatus.connect(Window.update_config_status)
 
 def close_app():
     """ Actions prior to the application being shutdown

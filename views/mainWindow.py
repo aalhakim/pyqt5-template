@@ -5,7 +5,7 @@
 """ mainWindow.py
 MainWindow PyQt5 object.
 
-Last Updated: 18 December 2019 (Ali Al-Hakim)
+Last Updated: 05 April 2020 (Ali Al-Hakim)
 """
 
 import sys
@@ -42,12 +42,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
     sigShutdown = QtCore.pyqtSignal()
     sigUpdateConfiguration = QtCore.pyqtSignal()
+    sigSelectSoftware = QtCore.pyqtSignal(str)
+    sigSelectPrinter = QtCore.pyqtSignal(str)
 
     def __init__(self):
         super(MainWindow, self).__init__()
         self.debugMode = False
 
         # Define class object handlers.
+        self.actions = {}
+        self.configs = {}
         self.dialogs = {}  # Dialog window object manager
         self.software_list = []
         self.printer_list = []
@@ -56,7 +60,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setWindowTitle("{}  –  {}  –  v{}".format(appdata.ORGANISATION_NAME,
                                                        appdata.APPLICATION_NAME,
                                                        appdata.VERSION))
-        print(os.path.join(os.path.dirname(__file__), os.path.normpath(ICON_FILE)))
         self.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(__file__), ICON_FILE)))
         self.resize(WINDOW_WIDTH, WINDOW_HEIGHT)
         self.centre()
@@ -86,32 +89,53 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Application Configuration Menu
         self.menubar_configMenu = self.menubar.addMenu("&Configuration")
-        action_updateConfiguration = QtWidgets.QAction("&Update Configuration", self)
-        action_updateConfiguration.triggered.connect(self.sigUpdateConfiguration.emit)
-        config_SoftwareAutoUpdate = QtWidgets.QAction("Software Auto-Update", self)
-        config_SoftwareAutoUpdate.setEnabled(False)
-        config_softwareUpdateList = QtWidgets.QMenu("Software Update List", self)
-        config_validateCRC = QtWidgets.QAction("Validate CRC", self)
-        config_validateCRC.setEnabled(False)
-        config_validateRegistered = QtWidgets.QAction("Validate Registered", self)
-        config_validateRegistered.setEnabled(False)
 
-        self.menubar_configMenu.addAction(action_updateConfiguration)
+        name = appdata.ACTION_UPDATE_CONFIGURATION
+        action = QtWidgets.QAction(name, self)
+        action.triggered.connect(self.sigUpdateConfiguration.emit)
+        self.menubar_configMenu.addAction(action)
         self.menubar_configMenu.addSeparator()
-        self.menubar_configMenu.addAction(config_SoftwareAutoUpdate)
-        self.menubar_configMenu.addMenu(config_softwareUpdateList)
+        self.actions[name] = action
+
+        name = appdata.CONFIG_SOFTWARE_AUTOUPDATE
+        config = QtWidgets.QAction(name, self, checkable=True)
+        config.setEnabled(False)
+        self.menubar_configMenu.addAction(config)
+        self.configs[name] = config
+
+        name = appdata.CONFIG_SOFTWARE_LIST
+        config = QtWidgets.QMenu(name, self)
+        self.menubar_configMenu.addMenu(config)
         self.menubar_configMenu.addSeparator()
-        self.menubar_configMenu.addAction(config_validateCRC)
-        self.menubar_configMenu.addAction(config_validateRegistered)
+        self.configs[name] = config
+
+        name = appdata.CONFIG_VALIDATE_CRC
+        config = QtWidgets.QAction(name, self, checkable=True)
+        config.setEnabled(False)
+        self.menubar_configMenu.addAction(config)
+        self.configs[name] = config
+
+        name = appdata.CONFIG_VALIDATE_REGISTERED
+        config = QtWidgets.QAction(name, self, checkable=True)
+        config.setEnabled(False)
+        self.menubar_configMenu.addAction(config)
+        self.configs[name] = config
+
 
         # Services Settings Menu
         self.menubar_servicesMenu = self.menubar.addMenu("&Services")
-        config_autoSelectPrinter = QtWidgets.QAction("Auto-Select Printer", self)
-        config_autoSelectPrinter.setEnabled(False)
-        config_printerList = QtWidgets.QMenu("Printer List", self)
 
-        self.menubar_servicesMenu.addAction(config_autoSelectPrinter)
-        self.menubar_servicesMenu.addMenu(config_printerList)
+        name = appdata.CONFIG_PRINTER_AUTOSELECT
+        config = QtWidgets.QAction(name, self, checkable=True)
+        config.setEnabled(False)
+        self.menubar_servicesMenu.addAction(config)
+        self.configs[name] = config
+
+        name = appdata.CONFIG_PRINTER_LIST
+        config = QtWidgets.QMenu(name, self)
+        self.menubar_servicesMenu.addMenu(config)
+        self.configs[name] = config
+
 
         # Help Menu
         self.menubar_helpMenu = self.menubar.addMenu("&Help")
@@ -197,16 +221,101 @@ class MainWindow(QtWidgets.QMainWindow):
             dialog.show()
             self.dialogs[appdata.DIALOG_NAME_HELP_GUIDE] = dialog
 
-    @QtCore.pyqtSlot(dict)
-    def handle_update_configuration(self, config):
-        """
-        Update the widgets to display the correct configuration settings.
-        """
-        pass
+    # @QtCore.pyqtSlot(dict)
+    # def update_configuration(self, new_config):
+    #     """
+    #     Update the widgets to display the correct configuration settings.
+    #     """
+    #     pass
 
+    #     for name in appdata.CONFIGURATIONS:
+    #         if name in new_config:
+    #             config = new_config[name]
+
+    #             # Set boolean configurations to True or False
+    #             if config["type"] == bool:
+    #                 self.configs[name].setEnabled(config["data"])
+
+    #             # Display allowed options for list configurations
+    #             elif config["type"] == list:
+    #                 action = self._get_action()
+    #                 for option_name in config["data"]:
+    #                     option = QtWidgets.QAction(name, self)
+    #                     option.triggered.connect(action)
+    #                     self.configs[name].addAction(option)
+
+    #         else:
+    #             print("{} not in new_config".format(name))
+
+    @QtCore.pyqtSlot(bool)
+    def enable_application(self, status):
+        """
+        Enable or disable user interface.
+        """
+        debugLogger.error("This function has not been implemented yet")
+
+    @QtCore.pyqtSlot(list)
+    def update_software_list(self, release_tags):
+        """
+        Update the list of available software options that can be used.
+        """
+        software_menu = self.configs[appdata.CONFIG_SOFTWARE_LIST]
+        software_menu.clear()
+        if release_tags == []:
+            action = QtWidgets.QAction("No options available", self)
+            action.setEnabled(False)
+            software_menu.addAction(action)
+
+        else:
+            for tag in release_tags:
+                action = QtWidgets.QAction(tag, self)
+                action.triggered.connect(lambda: self._select_software(tag))
+                software_menu.addAction(action)
+
+    @QtCore.pyqtSlot(str, bool)
+    def update_config_status(self, config_name, status):
+        """
+        Update a config status icon.
+        """
+        self.configs[config_name].setChecked(status)
+
+
+
+    # def _get_action(self, action_id):
+    #     """
+    #     Return a QtAction based on the aciton_id supplied.
+
+    #     Arguments
+    #     ==========
+    #     action_id: <str>
+    #         The name of the action subject.
+    #     """
+    #     if action_id == appdata.CONFIG_SOFTWARE_LIST:
+    #         action = self._select_software
+    #     elif action_id == appdata.CONFIG_PRINTER_LIST:
+    #         action = self._select_printer
+    #     else:
+    #         raise RuntimeError("Invalid action_id recieved: {}".format(action_id))
+
+    #     return action
+
+    def _select_software(self, software_id):
+        """
+        Submit a signal with the user's software selection.
+        """
+        print(software_id, type(software_id))
+        # Do something
+        self.sigSelectSoftware.emit(software_id)
+
+    def _select_printer(self, printer_id):
+        """
+        Submit a signal with the user's printer selection.
+        """
+        # Do something
+        self.sigSelectPrinter.emit(printer_id)
 
     #-------------------------------------------------------------------
-    # EVENT HANDLERS
+    # EVENT HANDLERS / CALLBACKS
     #-------------------------------------------------------------------
     def keyPressEvent(self, event):
         """ Handle key press events
@@ -254,7 +363,7 @@ if __name__ == "__main__":
 
     # Create 'main' worker thread
     Window = MainWindow()
-    Window.debugMode = True                                             # TODO (AHA): What is debug mode used for?
+    Window.debugMode = True
 
     # Run the application
     Window.show()

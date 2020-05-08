@@ -64,6 +64,13 @@ class WebClient(QtCore.QObject):
         self.s3.upload_file(src_directory, s3_directory, filename)
 
     @QtCore.pyqtSlot(str)
+    def handle_update_application(self, release_tag):
+        """
+        Download a the `release_tag` build of code.
+        """
+        debugLogger.error("UPDATE APPLICATION feature not been written yet")
+
+    @QtCore.pyqtSlot(str)
     def handle_release_query(self, query):
         """
         Handle a the request to retrieve release data.
