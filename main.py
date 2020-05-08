@@ -8,12 +8,11 @@ Written By: Ali Al-Hakim
 Last Updated: 18 December 2019
 """
 
-# Configure the logger(s) used by this program.
-import os
+# Logger configuration
 if __name__ == "__main__":
+    from logger.logging_config import config
     import logging.config
-    logger_config = "logging_{}.conf".format(os.name)
-    logging.config.fileConfig(os.path.join(os.path.dirname(__file__), "logger", logger_config))
+    logging.config.dictConfig(config)
 
 
 # Standard Library Imports
