@@ -5,7 +5,7 @@
 """ mainWindow.py
 MainWindow PyQt5 object.
 
-Last Updated: 05 April 2020 (Ali Al-Hakim)
+Last Updated: 08 April 2020 (Ali Al-Hakim)
 """
 
 import sys

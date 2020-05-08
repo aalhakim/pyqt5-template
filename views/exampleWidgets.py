@@ -8,8 +8,12 @@ You must have PyQt5 installed to run this code:
  - Windows: python3 -m pip install pyqt5
  - Unix: sudo apt install python3-pyqt5
 
-Last Updated: 18 December 2019 (Ali Al-Hakim)
+Last Updated: 08 April 2020 (Ali Al-Hakim)
 """
+import sys
+PACKAGE_NAME = "pyqt5-template"
+PACKAGE_DIRECTORY = __file__[0:__file__.find(PACKAGE_NAME)+len(PACKAGE_NAME)]
+sys.path.append(PACKAGE_DIRECTORY)
 
 # Standard Library Imports
 import os
