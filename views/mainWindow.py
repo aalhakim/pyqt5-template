@@ -340,8 +340,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if self.debugMode is False:
             # Don't allow pyQt to close the Window (to ensure threads can be
-            # dealt with first)
-            event.ignore()
+            # dealt with first).
+            # Closing with File->exit means `event` is a boolean object
+            # with no attrbute ignore. In this case, avoid this action.
+            if type(event) != bool:
+                event.ignore()
 
             # Configure all switches to off by interrupting all ongoing tests
             #debugLogger.info("Starting program shutdown.")
