@@ -93,7 +93,7 @@ class WorkerGroup(QtCore.QObject):
     def reset_thread(self, thread):
         debugLogger.debug("Resetting thread {}.".format(thread))
         if thread.isRunning():
-            thread.terminate()
+            thread.exit()
             thread.wait()
             thread.start()
         debugLogger.debug("Thread {} reset.".format(thread))
@@ -102,7 +102,7 @@ class WorkerGroup(QtCore.QObject):
     def kill_thread(self, thread):
         debugLogger.debug("Terminating thread {}.".format(thread))
         if thread.isRunning():
-            thread.terminate()
+            thread.exit()
             thread.wait()
         debugLogger.debug("Thread {} terminated.".format(thread))
 
@@ -115,8 +115,8 @@ class WorkerGroup(QtCore.QObject):
         for thread, name in self.threads.items():
             if thread.isRunning():
                 debugLogger.debug(" - Terminating thread {}.".format(name))
-                thread.terminate()
-                #thread.wait()
+                thread.exit()
+                thread.wait()
             debugLogger.debug(" - {} thread terminated".format(name))
 
         self.sigShutdown.emit()
